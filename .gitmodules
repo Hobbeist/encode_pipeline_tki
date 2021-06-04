@@ -1,0 +1,4 @@
+[submodule "SINGULARITY"]
+	path = SINGULARITY
+	url = ssh://solitude:/data/ENCODE_pipeline_dependencies/SINGULARITY
+	datalad-id = ccdbeffd-4e6f-4c37-b795-48fdbcc64da7
