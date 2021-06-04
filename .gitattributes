@@ -1,3 +1,8 @@
 
 * annex.backend=MD5E
 **/.git* annex.largefiles=nothing
+***.org annex.largefiles=nothing
+***.sh annex.largefiles=nothing
+***.R annex.largefiles=nothing
+***.Rmd annex.largefiles=nothing
+** annex.largefiles(largerthan=200kb)
