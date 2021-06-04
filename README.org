@@ -1,0 +1,159 @@
+#+TITLE:ENCODE rna-seq-pipeline @ Computational Biology (TKI) 
+#+AUTHOR: Sebastian Rauschert, PhD
+#+email: Sebastian.Rauschert@telethonkids.org.au
+
+* Overview
+This is the analysis DataLad structure. The Archictecture is as follows
+
+#+BEGIN_SRC 
+                         ANALYSIS DATASET
++-----------------------------------------+
+|+---------------------------------------+|
+||                                       ||
+||                                       ||
+||                                  DATA ||
+|+---------------------------------------+|
+|+---------------------------------------+|
+||+----------------+                     ||
+|||encode pipeline |                     ||
+||+----------------+            PIPELINE ||
+|+---------------------------------------+|
+|+---------------------------------------+|
+||                                       ||
+||                                       ||
+||                               INDICES ||
+|+---------------------------------------+|
+|+---------------------------------------+|
+||                                       ||
+||                                       ||
+||                      ANALYSIS RESULTS ||
+|+---------------------------------------+|
+|+---------------------------------------+|
+||                                       ||
+||                                       ||
+||               SINGULARITY [.sif file] ||
+|+---------------------------------------+|
++-----------------------------------------+
+
+#+END_SRC
+** Data
+This ~Datalad~ data set is the one piece that will vary for the analysis. It contains the ~fastq~ files for the specific analysis. We install it via:
+#+BEGIN_SRC bash
+datalad clone [location/of/the/data]
+#+END_SRC
+** Pipeline
+This is a ~DataLad~ container that contains the encode rna seq pipeline and all necessary scripts to run it. Importantly, the script ~createINPUTjson.sh~ needs to be run with the project specific parameters:
+
+#+BEGIN_SRC bash
+./createINPUTjson.sh -r [Read Identifier: This can be READ or R ] \
+                     -f [Path to fastq files (this is relative path)] \
+                     -e [File ending] \
+#+END_SRC
+** Indices
+This is a ~DataLad~ data set that contains the indices necessary for the RNA seq pipeline.
+You can get them via ~datalad get INDICES~.
+** Analysis Results
+This is where the output of the pipeline will finally reside.
+** Singularity [.sif file]
+As the pipeline requires a singularity container to reproducibly run, and we do not always want to create the image from scratch, if we do now have it installed,
+I put the .sif file in the data architecture. This unfortunately does not work with containers_add, as the datalad call does not include the container call itself.
+Hence the container won't be called from the DataLad .datalad folder.
+* How To
+In order to get the pipeline running, we need to first assemble the individual pieces:
+** 1. Get the pieces
+#+BEGIN_SRC bash
+# Activate the conda environment
+conda activate datalad 
+
+# Get the folder contents from their (remote) locations
+datalad get INDICES
+datalad get PIPELINE
+datalad get SINGULARITY
+
+# Add the fastq data
+datalad clone [DATA/LOCATION]
+
+# Rename the folder to DATA
+mv [DATA/FOLDER/NAME] DATA
+
+# Get the data
+datalad get DATA
+#+END_SRC
+** 2. Set up the folder
+To set up the datalad data set, we need to retrieve all the data.
+To make sure this works, make sure datalad is activated and then run:
+#+BEGIN_SRC bash
+bash setup.sh
+#+END_SRC
+
+** 3. Create the input json file for the workflow
+We need to create a input file for the rna-seq-pipeline, which we can do with the above mentioned script:
+#+BEGIN_SRC bash
+bash PIPELINE/scripts/createINPUTjson.sh -r [Read Identifier: This can be READ or R ] \
+                                         -f [Path to fastq files (this is relative path) ] \
+                                         -e [File ending] \
+#+END_SRC
+** 4. Run the pipeline
+*** 4.1 Local, without slurm
+Now we have all the missing pieces together and can run the pipeline with the following command on a local machien without slurm backend:
+#+BEGIN_SRC bash
+
+datalad run -m "Run rna seq pipeline" \
+               "bash PIPELINE/scripts/rnaSeqPipe.sh"
+
+#+END_SRC
+* Setup
+In order for this pipeline to run smoothly, we need to set up the following pieces of software.
+** 1. Miniconda
+Miniconda is at the heart of the whole workflow, as we use it to create the pipeline environment.
+Feel free to use an updated version of miniconda. This is just the version I installed.
+#+BEGIN_SRC bash :eval never
+wget https://repo.anaconda.com/miniconda/Miniconda3-py39_4.9.2-Linux-x86_64.sh
+bash Miniconda3-py39_4.9.2-Linux-x86_64.sh
+#+END_SRC
+
+Also set the conda base autoload to deactivated
+#+BEGIN_SRC bash :eval never
+conda config --set auto_activate_base false
+#+END_SRC
+
+Next, we need to copy the conda config from ~/.bash_profile into ~/.zshrc
+#+BEGIN_SRC 
+# >>> conda initialize >>>                                                                                                                                                                                         
+# !! Contents within this block are managed by 'conda init' !!                                                                                                                                                     
+__conda_setup="$('/home/sebastian/miniconda3/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
+if [ $? -eq 0 ]; then
+    eval "$__conda_setup"
+else
+    if [ -f "/home/sebastian/miniconda3/etc/profile.d/conda.sh" ]; then
+        . "/home/sebastian/miniconda3/etc/profile.d/conda.sh"
+    else
+        export PATH="/home/sebastian/miniconda3/bin:$PATH"
+    fi
+fi
+unset __conda_setup
+# <<< conda initialize <<<  
+#+END_SRC
+** 2. Create a conda environment
+We need to create a conda environment to run the pipeline.
+The following three pieces need to be installed:
+1. ~DataLad~
+2. ~caper~
+3. ~croo~
+
+Make sure you have activated the ~bioconda~ channel:
+#+BEGIN_SRC bash
+conda config --add channels defaults
+conda config --add channels bioconda
+conda config --add channels conda-forge
+#+END_SRC
+
+Now we can create our conda environment:
+#+BEGIN_SRC bash
+conda create -n ENCODErnaSeq
+conda activate ENCODErnaSeq
+
+conda install -c conda-forge datalad 
+conda install -c bioconda caper 
+conda install -c bioconda croo 
+#+END_SRC
