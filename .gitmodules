@@ -6,3 +6,7 @@
 	path = INDICES
 	url = ssh://solitude:/data/ENCODE_pipeline_dependencies/INDICES
 	datalad-id = 984753e9-11bb-4e07-8be4-9c0dbc27c677
+[submodule "PIPELINE"]
+	path = PIPELINE
+	url = ssh://solitude:/data/ENCODE_pipeline_dependencies/ENCODEpipeline
+	datalad-id = c747ede8-f1a8-442e-b46a-93835d826924
