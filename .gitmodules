@@ -2,3 +2,7 @@
 	path = SINGULARITY
 	url = ssh://solitude:/data/ENCODE_pipeline_dependencies/SINGULARITY
 	datalad-id = ccdbeffd-4e6f-4c37-b795-48fdbcc64da7
+[submodule "INDICES"]
+	path = INDICES
+	url = ssh://solitude:/data/ENCODE_pipeline_dependencies/INDICES
+	datalad-id = 984753e9-11bb-4e07-8be4-9c0dbc27c677
