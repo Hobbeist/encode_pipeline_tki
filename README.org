@@ -1,7 +1,7 @@
 #+TITLE:ENCODE rna-seq-pipeline @ Computational Biology (TKI) 
 #+AUTHOR: Sebastian Rauschert, PhD
 #+email: Sebastian.Rauschert@telethonkids.org.au
-#+OPTIONS toc:1
+#+OPTIONS: toc:2
 
 * Overview
 This is the analysis DataLad structure. The Archictecture is as follows
