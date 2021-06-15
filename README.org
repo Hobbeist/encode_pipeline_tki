@@ -1,6 +1,7 @@
 #+TITLE:ENCODE rna-seq-pipeline @ Computational Biology (TKI) 
 #+AUTHOR: Sebastian Rauschert, PhD
 #+email: Sebastian.Rauschert@telethonkids.org.au
+#+OPTIONS toc:1
 
 * Overview
 This is the analysis DataLad structure. The Archictecture is as follows
@@ -35,6 +36,61 @@ This is the analysis DataLad structure. The Archictecture is as follows
 |+---------------------------------------+|
 +-----------------------------------------+
 
+#+END_SRC
+** Dependencies
+In order for this pipeline to run smoothly, we need to set up the following pieces of software.
+*** 1. Miniconda
+Miniconda is at the heart of the whole workflow, as we use it to create the pipeline environment.
+Feel free to use an updated version of miniconda. This is just the version I installed.
+#+BEGIN_SRC bash :eval never
+wget https://repo.anaconda.com/miniconda/Miniconda3-py39_4.9.2-Linux-x86_64.sh
+bash Miniconda3-py39_4.9.2-Linux-x86_64.sh
+#+END_SRC
+
+Also set the conda base autoload to deactivated
+#+BEGIN_SRC bash :eval never
+conda config --set auto_activate_base false
+#+END_SRC
+
+Next, we need to copy the conda config from ~/.bash_profile into ~/.zshrc
+#+BEGIN_SRC 
+# >>> conda initialize >>>                                                                                                                                                                                         
+# !! Contents within this block are managed by 'conda init' !!                                                                                                                                                     
+__conda_setup="$('/home/sebastian/miniconda3/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
+if [ $? -eq 0 ]; then
+    eval "$__conda_setup"
+else
+    if [ -f "/home/sebastian/miniconda3/etc/profile.d/conda.sh" ]; then
+        . "/home/sebastian/miniconda3/etc/profile.d/conda.sh"
+    else
+        export PATH="/home/sebastian/miniconda3/bin:$PATH"
+    fi
+fi
+unset __conda_setup
+# <<< conda initialize <<<  
+#+END_SRC
+*** 2. Create a conda environment
+We need to create a conda environment to run the pipeline.
+The following three pieces need to be installed:
+1. ~DataLad~
+2. ~caper~
+3. ~croo~
+
+Make sure you have activated the ~bioconda~ channel:
+#+BEGIN_SRC bash
+conda config --add channels defaults
+conda config --add channels bioconda
+conda config --add channels conda-forge
+#+END_SRC
+
+Now we can create our conda environment:
+#+BEGIN_SRC bash
+conda create -n ENCODErnaSeq
+conda activate ENCODErnaSeq
+
+conda install -c conda-forge datalad 
+conda install -c bioconda caper 
+conda install -c bioconda croo 
 #+END_SRC
 ** Data
 This ~Datalad~ data set is the one piece that will vary for the analysis. It contains the ~fastq~ files for the specific analysis. We install it via:
@@ -102,58 +158,4 @@ datalad run -m "Run rna seq pipeline" \
                "bash PIPELINE/scripts/rnaSeqPipe.sh"
 
 #+END_SRC
-* Setup
-In order for this pipeline to run smoothly, we need to set up the following pieces of software.
-** 1. Miniconda
-Miniconda is at the heart of the whole workflow, as we use it to create the pipeline environment.
-Feel free to use an updated version of miniconda. This is just the version I installed.
-#+BEGIN_SRC bash :eval never
-wget https://repo.anaconda.com/miniconda/Miniconda3-py39_4.9.2-Linux-x86_64.sh
-bash Miniconda3-py39_4.9.2-Linux-x86_64.sh
-#+END_SRC
 
-Also set the conda base autoload to deactivated
-#+BEGIN_SRC bash :eval never
-conda config --set auto_activate_base false
-#+END_SRC
-
-Next, we need to copy the conda config from ~/.bash_profile into ~/.zshrc
-#+BEGIN_SRC 
-# >>> conda initialize >>>                                                                                                                                                                                         
-# !! Contents within this block are managed by 'conda init' !!                                                                                                                                                     
-__conda_setup="$('/home/sebastian/miniconda3/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
-if [ $? -eq 0 ]; then
-    eval "$__conda_setup"
-else
-    if [ -f "/home/sebastian/miniconda3/etc/profile.d/conda.sh" ]; then
-        . "/home/sebastian/miniconda3/etc/profile.d/conda.sh"
-    else
-        export PATH="/home/sebastian/miniconda3/bin:$PATH"
-    fi
-fi
-unset __conda_setup
-# <<< conda initialize <<<  
-#+END_SRC
-** 2. Create a conda environment
-We need to create a conda environment to run the pipeline.
-The following three pieces need to be installed:
-1. ~DataLad~
-2. ~caper~
-3. ~croo~
-
-Make sure you have activated the ~bioconda~ channel:
-#+BEGIN_SRC bash
-conda config --add channels defaults
-conda config --add channels bioconda
-conda config --add channels conda-forge
-#+END_SRC
-
-Now we can create our conda environment:
-#+BEGIN_SRC bash
-conda create -n ENCODErnaSeq
-conda activate ENCODErnaSeq
-
-conda install -c conda-forge datalad 
-conda install -c bioconda caper 
-conda install -c bioconda croo 
-#+END_SRC
