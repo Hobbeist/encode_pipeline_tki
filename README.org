@@ -1,7 +1,21 @@
 #+TITLE:ENCODE rna-seq-pipeline @ Computational Biology (TKI) 
 #+AUTHOR: Sebastian Rauschert, PhD
 #+email: Sebastian.Rauschert@telethonkids.org.au
-#+OPTIONS: toc:2
+
+* Content
+- [[#overview][Overview]]
+  - [[#dependencies][Dependencies]]
+  - [[#data][Data]]
+  - [[#pipeline][Pipeline]]
+  - [[#indices][Indices]]
+  - [[#analysis_results][Analysis Results]]
+  - [[#singularity][Singularity]]
+- [[#howto][How To]]
+  - [[#0_sshsetupforaccesstoserver][ssh setup for access to server]]
+  - [[#1_getthepieces][Get the pieces]]
+  - [[#2_setupthefolder][Set up the folder]]
+  - [[#3_Createtheinputjsonfilefortheworkflow][Create the input json file for the workflow]]
+  - [[#4_runthepipeline][Run the pipeline]]
 
 * Overview
 This is the analysis DataLad structure. The Archictecture is as follows
@@ -165,7 +179,7 @@ Now we have all the missing pieces together and can run the pipeline with the fo
 #+BEGIN_SRC bash
 
 datalad run -m "Run rna seq pipeline" \
-               "bash PIPELINE/scripts/rnaSeqPipe.sh"
+               "bash PIPELINE/scripts/rnaSeqPipe_local.sh"
 
 #+END_SRC
 
