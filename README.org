@@ -115,6 +115,16 @@ As the pipeline requires a singularity container to reproducibly run, and we do 
 I put the .sif file in the data architecture. This unfortunately does not work with containers_add, as the datalad call does not include the container call itself.
 Hence the container won't be called from the DataLad .datalad folder.
 * How To
+** 0. ssh setup for access to server
+As some of the pipeline dependencies are located on a remote server, the server needs to be accessible by the analyst. Hence, a key would need to have been created. Further, the following setup needs to be added to the file ~~/.ssh/config~:
+
+#+BEGIN_SRC 
+Host rnaseq
+     Hostname 146.118.64.152
+     User [YOUR USERNAME]
+     IdentityFile [LOCATION OF YOUr PRIVATE KEY (can be ~/.ssh/keyname)
+#+END_SRC
+
 In order to get the pipeline running, we need to first assemble the individual pieces:
 ** 1. Get the pieces
 #+BEGIN_SRC bash
