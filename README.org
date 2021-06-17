@@ -8,14 +8,14 @@
   - [[#data][Data]]
   - [[#pipeline][Pipeline]]
   - [[#indices][Indices]]
-  - [[#analysis_results][Analysis Results]]
+  - [[#analysis-results][Analysis Results]]
   - [[#singularity][Singularity]]
-- [[#howto][How To]]
-  - [[#0_sshsetupforaccesstoserver][ssh setup for access to server]]
-  - [[#1_getthepieces][Get the pieces]]
-  - [[#2_setupthefolder][Set up the folder]]
-  - [[#3_Createtheinputjsonfilefortheworkflow][Create the input json file for the workflow]]
-  - [[#4_runthepipeline][Run the pipeline]]
+- [[#how-to][How To]]
+  - [[#0-ssh-setup-for-access-to-server][ssh setup for access to server]]
+  - [[#1-get-the-pieces][Get the pieces]]
+  - [[#2-setup-the-folder][Set up the folder]]
+  - [[#3-create-the-input-json-file-for-the-workflow][Create the input json file for the workflow]]
+  - [[#4-run-the-pipeline][Run the pipeline]]
 
 * Overview
 This is the analysis DataLad structure. The Archictecture is as follows
