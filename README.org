@@ -66,7 +66,9 @@ Also set the conda base autoload to deactivated
 conda config --set auto_activate_base false
 #+END_SRC
 
-Next, we need to copy the conda config from ~/.bash_profile into ~/.zshrc
+*The following step is only necessary if you are working wihtin the zshell rahter than bash:*
+
+We need to copy the conda config from ~/.bash_profile into ~/.zshrc
 #+BEGIN_SRC 
 # >>> conda initialize >>>                                                                                                                                                                                         
 # !! Contents within this block are managed by 'conda init' !!                                                                                                                                                     
@@ -112,7 +114,7 @@ This ~Datalad~ data set is the one piece that will vary for the analysis. It con
 datalad clone [location/of/the/data]
 #+END_SRC
 ** Pipeline
-This is a ~DataLad~ container that contains the encode rna seq pipeline and all necessary scripts to run it. Importantly, the script ~createINPUTjson.sh~ needs to be run with the project specific parameters:
+This is a ~DataLad~ container that contains the encode rna seq pipeline and all necessary scripts to run it. Importantly, for the paired end read as an example, the script ~createINPUTjson.sh~ needs to be run with the project specific parameters (single end read information available under Run the pipeline):
 
 #+BEGIN_SRC bash
 ./createINPUTjson.sh -r [Read Identifier: This can be READ or R ] \
@@ -143,7 +145,7 @@ In order to get the pipeline running, we need to first assemble the individual p
 ** 1. Get the pieces
 #+BEGIN_SRC bash
 # Activate the conda environment
-conda activate datalad 
+conda activate ENCODErnaSeq
 
 # Get the folder contents from their (remote) locations
 datalad get INDICES
@@ -167,19 +169,30 @@ bash setup.sh
 #+END_SRC
 
 ** 3. Create the input json file for the workflow
+
+*** 3.1 Paired end reads
 We need to create a input file for the rna-seq-pipeline, which we can do with the above mentioned script:
 #+BEGIN_SRC bash
 bash PIPELINE/scripts/createINPUTjson.sh -r [Read Identifier: This can be READ or R ] \
                                          -f [Path to fastq files (this is relative path) ] \
                                          -e [File ending] \
 #+END_SRC
+
+*** 3.2 Single end reads
+This is the same, but we use the single end read script:
+#+BEGIN_SRC bash
+bash PIPELINE/scripts/createINPUTjson_singleEND.sh -r [Read Identifier: This can be READ or R ] \
+                                         -f [Path to fastq files (this is relative path) ] \
+                                         -e [File ending] \
+#+END_SRC
+
 ** 4. Run the pipeline
 *** 4.1 Local, without slurm
 Now we have all the missing pieces together and can run the pipeline with the following command on a local machien without slurm backend:
 #+BEGIN_SRC bash
 
 datalad run -m "Run rna seq pipeline" \
-               "bash PIPELINE/scripts/rnaSeqPipe_local.sh"
+               "bash PIPELINE/scripts/rnaSeq_local.sh"
 
 #+END_SRC
 
