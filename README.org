@@ -18,7 +18,8 @@
   - [[#4-run-the-pipeline][Run the pipeline]]
 
 * Overview
-This is the analysis DataLad structure. The Archictecture is as follows
+The follwing is based on the [[https://github.com/ENCODE-DCC/rna-seq-pipeline][ENCODE rna-seq-pipeline]] and is adjusted to include all the parts necessary for the analysis.
+This is the analysis DataLad structure. The Archictecture is as follows:
 
 #+BEGIN_SRC 
                          ANALYSIS DATASET
@@ -52,7 +53,7 @@ This is the analysis DataLad structure. The Archictecture is as follows
 
 #+END_SRC
 ** Dependencies
-In order for this pipeline to run smoothly, we need to set up the following pieces of software.
+In order for this pipeline to run smoothly, we need to set up the following pieces of software. *These and all other dependencies only need to be installed once.*
 *** 1. Miniconda
 Miniconda is at the heart of the whole workflow, as we use it to create the pipeline environment.
 Feel free to use an updated version of miniconda. This is just the version I installed.
@@ -61,6 +62,11 @@ wget https://repo.anaconda.com/miniconda/Miniconda3-py39_4.9.2-Linux-x86_64.sh
 bash Miniconda3-py39_4.9.2-Linux-x86_64.sh
 #+END_SRC
 
+Throughout the installation, conda asks for three things:
+1. Agree to the terms of reference
+2. Confirm the location of the conda install (default is fine)
+3. Run ~conda init~ after install to initialise conda. Here, please answere ~yes~.
+
 Also set the conda base autoload to deactivated
 #+BEGIN_SRC bash :eval never
 conda config --set auto_activate_base false
@@ -68,7 +74,7 @@ conda config --set auto_activate_base false
 
 *The following step is only necessary if you are working wihtin the zshell rahter than bash:*
 
-We need to copy the conda config from ~/.bash_profile into ~/.zshrc
+We need to copy the conda config from ~/.bash_profile (it might be ~/.bashrc in some cases) into ~/.zshrc
 #+BEGIN_SRC 
 # >>> conda initialize >>>                                                                                                                                                                                         
 # !! Contents within this block are managed by 'conda init' !!                                                                                                                                                     
@@ -109,7 +115,15 @@ conda install -c bioconda caper
 conda install -c bioconda croo 
 #+END_SRC
 ** Data
-This ~Datalad~ data set is the one piece that will vary for the analysis. It contains the ~fastq~ files for the specific analysis. We install it via:
+This ~Datalad~ data set is the one piece that will vary for the analysis. It contains the ~fastq~ files for the specific analysis.
+In case this is not a ~DataLad~ data set already, please run the following
+#+BEGIN_SRC 
+datalad create --force [fastq_directory]
+cd [fastq_directory]
+datalad save -m "Add data"
+#+END_SRC
+
+Now we can "install" it via:
 #+BEGIN_SRC bash
 datalad clone [location/of/the/data]
 #+END_SRC
@@ -187,6 +201,12 @@ bash PIPELINE/scripts/createINPUTjson_singleEND.sh -r [Read Identifier: This can
 #+END_SRC
 
 ** 4. Run the pipeline
+
+Make sure the dataset is up to date and everything is saved by running
+#+BEGIN_SRC 
+datalad save -m "Check dataset"
+#+END_SRC
+
 *** 4.1 Local, without slurm
 Now we have all the missing pieces together and can run the pipeline with the following command on a local machien without slurm backend:
 #+BEGIN_SRC bash
